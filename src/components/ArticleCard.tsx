@@ -24,7 +24,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const { t } = useTranslation();
 
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group animate-fade-in-up hover-lift">
       <Link to={`/article/${article.slug}`}>
         <div className="relative overflow-hidden h-48">
           <img

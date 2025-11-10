@@ -13,25 +13,25 @@ const AboutPage: React.FC = () => {
   ];
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/yourusername', label: 'GitHub', color: 'hover:bg-gray-800' },
-    { icon: Linkedin, href: 'https://linkedin.com/in/yourusername', label: 'LinkedIn', color: 'hover:bg-blue-700' },
-    { icon: Youtube, href: 'https://youtube.com/@yourchannel', label: 'YouTube', color: 'hover:bg-red-600' },
-    { icon: Twitter, href: 'https://twitter.com/yourusername', label: 'Twitter', color: 'hover:bg-sky-500' },
-    { icon: Mail, href: 'mailto:your.email@example.com', label: 'Email', color: 'hover:bg-green-600' },
+    { icon: Github, href: 'https://github.com/bidev', label: 'GitHub', color: 'hover:bg-gray-800' },
+    { icon: Linkedin, href: 'https://linkedin.com/in/bidev', label: 'LinkedIn', color: 'hover:bg-blue-700' },
+    { icon: Youtube, href: 'https://youtube.com/@bidev', label: 'YouTube', color: 'hover:bg-red-600' },
+    { icon: Twitter, href: 'https://twitter.com/bidev', label: 'Twitter', color: 'hover:bg-sky-500' },
+    { icon: Mail, href: 'mailto:contact@bidev.com', label: 'Email', color: 'hover:bg-green-600' },
   ];
 
   const bioEn = {
-    intro: "Hi, I'm Bilal 👋",
-    paragraph1: "I'm a passionate Flutter developer and tech writer dedicated to sharing knowledge and helping developers build amazing mobile applications.",
-    paragraph2: "With years of experience in mobile development, I've worked on various projects ranging from simple apps to complex enterprise solutions. My mission is to make Flutter development more accessible through detailed tutorials and practical code examples.",
-    paragraph3: "When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or creating educational content for the developer community.",
+    intro: "Welcome to BiDev 👋",
+    paragraph1: "BiDev is your go-to platform for mastering Flutter development. We provide comprehensive articles, in-depth guides, and practical code examples to help you build amazing cross-platform applications.",
+    paragraph2: "Our mission is to make Flutter development accessible to everyone - from beginners taking their first steps in mobile development to experienced developers looking to level up their skills. Every article is crafted with care, focusing on real-world scenarios and best practices.",
+    paragraph3: "We cover everything from basic widgets and layouts to advanced topics like state management, animations, Firebase integration, and performance optimization. Join our growing community of Flutter developers!",
   };
 
   const bioAr = {
-    intro: "مرحباً، أنا بلال 👋",
-    paragraph1: "أنا مطور فلاتر شغوف وكاتب تقني مكرس لمشاركة المعرفة ومساعدة المطورين في بناء تطبيقات موبايل رائعة.",
-    paragraph2: "مع سنوات من الخبرة في تطوير تطبيقات الموبايل، عملت على مشاريع متنوعة تتراوح من التطبيقات البسيطة إلى حلول المؤسسات المعقدة. مهمتي هي جعل تطوير فلاتر أكثر سهولة من خلال دروس تفصيلية وأمثلة عملية.",
-    paragraph3: "عندما لا أكون منشغلاً بالبرمجة، يمكنك أن تجدني أستكشف تقنيات جديدة، أو أساهم في مشاريع مفتوحة المصدر، أو أنشئ محتوى تعليمي لمجتمع المطورين.",
+    intro: "مرحباً بك في BiDev 👋",
+    paragraph1: "BiDev هي منصتك المثالية لإتقان تطوير Flutter. نقدم مقالات شاملة وأدلة متعمقة وأمثلة عملية لمساعدتك في بناء تطبيقات متعددة المنصات رائعة.",
+    paragraph2: "مهمتنا هي جعل تطوير Flutter متاحاً للجميع - من المبتدئين الذين يخطون خطواتهم الأولى في تطوير التطبيقات إلى المطورين ذوي الخبرة الذين يتطلعون لتطوير مهاراتهم. كل مقال مصمم بعناية، مع التركيز على السيناريوهات الواقعية وأفضل الممارسات.",
+    paragraph3: "نغطي كل شيء من الويدجتس الأساسية والتخطيطات إلى المواضيع المتقدمة مثل إدارة الحالة والرسوم المتحركة وتكامل Firebase وتحسين الأداء. انضم إلى مجتمعنا المتنامي من مطوري Flutter!",
   };
 
   const bio = isArabic ? bioAr : bioEn;

@@ -14,12 +14,14 @@ This guide will help you deploy your blog UI to GitHub and Vercel.
 ### Step 1: Prepare Your Repository
 
 1. **Initialize Git** (if not already done):
+
 ```bash
 cd /Users/bilal/Me/MyBlog/my-blog-ui
 git init
 ```
 
 2. **Create .gitignore** (already created):
+
 ```
 node_modules/
 dist/
@@ -27,6 +29,7 @@ dist/
 ```
 
 3. **Stage and commit your files**:
+
 ```bash
 git add .
 git commit -m "Initial commit: Blog UI with Supabase integration"
@@ -35,6 +38,7 @@ git commit -m "Initial commit: Blog UI with Supabase integration"
 ### Step 2: Push to GitHub
 
 1. **Create a new repository on GitHub**:
+
    - Go to https://github.com/new
    - Repository name: `my-blog-ui` (or your preferred name)
    - Description: "Modern bilingual blog platform with React and Supabase"
@@ -43,6 +47,7 @@ git commit -m "Initial commit: Blog UI with Supabase integration"
    - Click "Create repository"
 
 2. **Connect your local repository to GitHub**:
+
 ```bash
 git remote add origin https://github.com/YOUR_USERNAME/my-blog-ui.git
 git branch -M main
@@ -56,15 +61,18 @@ Replace `YOUR_USERNAME` with your GitHub username.
 #### Option A: Deploy via Vercel Dashboard (Recommended)
 
 1. **Go to Vercel**:
+
    - Visit https://vercel.com
    - Sign in with GitHub
 
 2. **Import Project**:
+
    - Click "Add New" → "Project"
    - Select your `my-blog-ui` repository
    - Click "Import"
 
 3. **Configure Project**:
+
    - **Framework Preset**: Vite
    - **Root Directory**: `./` (or leave as default)
    - **Build Command**: `npm run build`
@@ -73,11 +81,12 @@ Replace `YOUR_USERNAME` with your GitHub username.
 
 4. **Add Environment Variables**:
    Click "Environment Variables" and add:
+
    ```
    VITE_SUPABASE_URL=https://your-project.supabase.co
    VITE_SUPABASE_ANON_KEY=your-anon-key
    ```
-   
+
    **Important**: Add these for all environments (Production, Preview, Development)
 
 5. **Deploy**:
@@ -88,22 +97,26 @@ Replace `YOUR_USERNAME` with your GitHub username.
 #### Option B: Deploy via Vercel CLI
 
 1. **Install Vercel CLI**:
+
 ```bash
 npm install -g vercel
 ```
 
 2. **Login to Vercel**:
+
 ```bash
 vercel login
 ```
 
 3. **Deploy**:
+
 ```bash
 cd /Users/bilal/Me/MyBlog/my-blog-ui
 vercel
 ```
 
 4. **Follow the prompts**:
+
    - Set up and deploy? **Y**
    - Which scope? Select your account
    - Link to existing project? **N**
@@ -112,12 +125,14 @@ vercel
    - Override settings? **N**
 
 5. **Add environment variables**:
+
 ```bash
 vercel env add VITE_SUPABASE_URL
 vercel env add VITE_SUPABASE_ANON_KEY
 ```
 
 6. **Deploy to production**:
+
 ```bash
 vercel --prod
 ```
@@ -170,6 +185,7 @@ USING (true);
 ## 🎯 Testing Your Deployment
 
 1. **Visit your deployed URL**:
+
    - Check that the homepage loads correctly
    - Test language switching (EN/AR)
    - Test dark mode toggle
@@ -177,6 +193,7 @@ USING (true);
    - Verify categories and tags display
 
 2. **Test on different devices**:
+
    - Desktop
    - Tablet
    - Mobile
@@ -195,6 +212,7 @@ git push origin main
 ```
 
 Vercel will automatically:
+
 - Detect the push
 - Build your project
 - Deploy to production
@@ -216,9 +234,10 @@ dist/
 ## ⚡ Performance Optimization Tips
 
 1. **Code Splitting**: Consider lazy loading routes:
+
 ```typescript
-const HomePage = lazy(() => import('./pages/HomePage'));
-const ArticlePage = lazy(() => import('./pages/ArticlePage'));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const ArticlePage = lazy(() => import("./pages/ArticlePage"));
 ```
 
 2. **Image Optimization**: Use optimized images and lazy loading
@@ -232,7 +251,8 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 ### Build Fails
 
 **Problem**: Build fails on Vercel
-**Solution**: 
+**Solution**:
+
 - Check build logs in Vercel dashboard
 - Ensure all dependencies are in `package.json`
 - Test build locally: `npm run build`
@@ -241,6 +261,7 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 
 **Problem**: Supabase connection fails
 **Solution**:
+
 - Verify environment variables in Vercel dashboard
 - Variables must start with `VITE_`
 - Redeploy after adding variables
@@ -254,6 +275,7 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 
 **Problem**: Images showing broken
 **Solution**:
+
 - Check image URLs in Supabase
 - Verify network images are accessible
 - Check browser console for CORS errors
@@ -276,6 +298,7 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'));
 ## 🎉 Success!
 
 Your blog is now live! Share your URL:
+
 - Vercel URL: `https://your-project.vercel.app`
 - Custom domain: `https://yourdomain.com` (if configured)
 

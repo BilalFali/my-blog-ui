@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Homepage - Highest Priority -->
+  <url>
+    <loc>https://yourdomain.com/</loc>
+    <lastmod>2025-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Categories Page -->
+  <url>
+    <loc>https://yourdomain.com/categories</loc>
+    <lastmod>2025-11-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://yourdomain.com/about</loc>
+    <lastmod>2025-11-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Articles Page -->
+  <url>
+    <loc>https://yourdomain.com/articles</loc>
+    <lastmod>2025-11-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- 
+    TODO: Add individual article URLs dynamically
+    Example:
+    <url>
+      <loc>https://yourdomain.com/article/flutter-widgets-guide</loc>
+      <lastmod>2025-11-10</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  -->
+  
+  <!-- 
+    TODO: Add category URLs dynamically
+    Example:
+    <url>
+      <loc>https://yourdomain.com/category/widgets</loc>
+      <lastmod>2025-11-10</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  -->
+
+</urlset>

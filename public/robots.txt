@@ -1,0 +1,25 @@
+# BiDev - Flutter Development Blog
+# robots.txt
+
+User-agent: *
+Allow: /
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Disallow admin or private sections (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Allow search engines to index all content
+Allow: /categories
+Allow: /articles
+Allow: /about
+Allow: /tag
+
+# Encourage indexing of important resources
+Allow: /bidev-favicon.svg
+Allow: /assets/

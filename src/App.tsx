@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import AboutPage from './pages/AboutPage';
 import CategoriesPage from './pages/CategoriesPage';
+import CategoryArticlesPage from './pages/CategoryArticlesPage';
 import './i18n/config';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
               <Route path="/article/:slug" element={<ArticlePage />} />
               <Route path="/articles" element={<HomePage />} />
               <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/category/:slug" element={<CategoryArticlesPage />} />
               <Route path="/about" element={<AboutPage />} />
             </Routes>
           </main>

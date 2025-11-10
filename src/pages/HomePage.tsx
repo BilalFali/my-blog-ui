@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, TrendingUp, Clock, Eye, Folder, Tag as TagIcon, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { TrendingUp, Clock, Eye, Folder, Tag as TagIcon, ArrowRight, Code2, Smartphone, Palette, Zap, Database, Cpu, Layers } from 'lucide-react';
 import ArticleCard from '../components/ArticleCard';
 import type { Article } from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
@@ -8,20 +9,23 @@ import TagBadge from '../components/TagBadge';
 import Loader from '../components/Loader';
 import { blogApi, categoriesApi, tagsApi, type Post, type Category, type Tag } from '../services/api';
 
-const convertPostToArticle = (post: Post): Article => ({
+const convertPostToArticle = (post: Post, isArabic: boolean): Article => ({
   id: post.id,
-  title: post.title_en,
-  excerpt: post.content_en.substring(0, 150) + '...',
-  image: 'https://picsum.photos/seed/' + post.id + '/800/400',
-  date: new Date(post.created_at).toISOString().split('T')[0],
-  readTime: Math.ceil(post.content_en.split(' ').length / 200),
-  tags: post.tags?.map(t => t.name_en) || [],
-  language: post.language as 'en' | 'ar',
+  title: isArabic ? post.title_ar : post.title_en,
+  excerpt: isArabic 
+    ? ((post.excerpt_ar || post.content_ar).substring(0, 150) + '...') 
+    : ((post.excerpt_en || post.content_en).substring(0, 150) + '...'),
+  image: post.featured_image || 'https://picsum.photos/seed/' + post.id + '/800/400',
+  date: post.created_at,
+  readTime: Math.ceil((isArabic ? post.content_ar : post.content_en).split(' ').length / 200),
+  tags: post.tags?.map(t => isArabic ? t.name_ar : t.name_en) || [],
+  language: isArabic ? 'ar' : 'en',
   slug: post.slug,
 });
 
 const HomePage: React.FC = () => {
   const { i18n } = useTranslation();
+  const navigate = useNavigate();
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [latestArticles, setLatestArticles] = useState<Article[]>([]);
   const [recentArticles, setRecentArticles] = useState<Article[]>([]);
@@ -30,30 +34,64 @@ const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const isArabic = i18n.language === 'ar';
+        const [featuredPosts, latestPosts, recentPosts, categoriesData, tagsData] = await Promise.all([
+          blogApi.getFeaturedPosts(3),
+          blogApi.getPosts(1, 6),
+          blogApi.getRecentPosts(4),
+          categoriesApi.getAll(),
+          tagsApi.getAll(),
+        ]);
+
+        setFeaturedArticles(featuredPosts.map(p => convertPostToArticle(p, isArabic)));
+        setLatestArticles(latestPosts.data.map(p => convertPostToArticle(p, isArabic)));
+        setRecentArticles(recentPosts.map(p => convertPostToArticle(p, isArabic)));
+        setCategories(categoriesData);
+        setTags(tagsData.slice(0, 12));
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadData();
-  }, []);
+  }, [i18n.language]);
 
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const [featuredPosts, latestPosts, recentPosts, categoriesData, tagsData] = await Promise.all([
-        blogApi.getFeaturedPosts(3),
-        blogApi.getPosts(1, 6),
-        blogApi.getRecentPosts(4),
-        categoriesApi.getAll(),
-        tagsApi.getAll(),
-      ]);
+  const getCategoryIcon = (category: Category, index: number) => {
+    const iconClasses = "w-7 h-7";
+    const gradients = [
+      { from: 'from-blue-500', to: 'to-cyan-500', icon: <Smartphone className={iconClasses} /> },
+      { from: 'from-purple-500', to: 'to-pink-500', icon: <Palette className={iconClasses} /> },
+      { from: 'from-orange-500', to: 'to-red-500', icon: <Zap className={iconClasses} /> },
+      { from: 'from-green-500', to: 'to-emerald-500', icon: <Database className={iconClasses} /> },
+      { from: 'from-indigo-500', to: 'to-blue-500', icon: <Cpu className={iconClasses} /> },
+      { from: 'from-rose-500', to: 'to-pink-500', icon: <Layers className={iconClasses} /> },
+    ];
 
-      setFeaturedArticles(featuredPosts.map(convertPostToArticle));
-      setLatestArticles(latestPosts.data.map(convertPostToArticle));
-      setRecentArticles(recentPosts.map(convertPostToArticle));
-      setCategories(categoriesData.slice(0, 8));
-      setTags(tagsData.slice(0, 12));
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
-    }
+    const gradient = gradients[index % gradients.length];
+
+    return (
+      <button
+        key={category.id}
+        onClick={() => navigate('/category/' + category.slug)}
+        className="group bg-white dark:bg-gray-700 hover:bg-gradient-to-br hover:from-blue-50 hover:to-cyan-50 dark:hover:from-gray-600 dark:hover:to-gray-600 rounded-xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-600 transform hover:-translate-y-1 cursor-pointer"
+      >
+        <div className="flex flex-col items-center text-center gap-4">
+          <div className={`p-4 bg-gradient-to-br ${gradient.from} ${gradient.to} rounded-xl text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+            {gradient.icon}
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors text-sm md:text-base">
+              {i18n.language === 'ar' ? category.name_ar : category.name_en}
+            </h3>
+          </div>
+        </div>
+      </button>
+    );
   };
 
   if (loading) {
@@ -66,43 +104,105 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20 px-4">
+      <section className="bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-full mb-6 shadow-lg">
-            <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {i18n.language === 'ar' ? 'مرحبا بك في مدونتي' : 'Welcome to my blog'}
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 dark:bg-blue-500/20 backdrop-blur-sm rounded-full mb-6 shadow-lg border border-blue-200 dark:border-blue-800">
+            <Code2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+              {i18n.language === 'ar' ? 'BiDev - تطوير Flutter' : 'BiDev - Flutter Development'}
             </span>
           </div>
           
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-            {i18n.language === 'ar' ? 'اكتشف عالم البرمجة' : 'Discover the World of'}
+            {i18n.language === 'ar' ? 'احترف تطوير تطبيقات' : 'Master Flutter'}
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {i18n.language === 'ar' ? 'والتطوير' : 'Programming'}
+            <span className="bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
+              {i18n.language === 'ar' ? 'Flutter' : 'Development'}
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
             {i18n.language === 'ar' 
-              ? 'مقالات شاملة عن البرمجة، التطوير، والتقنيات الحديثة'
-              : 'Comprehensive articles about programming, development, and modern technologies'}
+              ? 'مقالات شاملة ومتعمقة حول Flutter و Dart لبناء تطبيقات متعددة المنصات'
+              : 'Comprehensive and in-depth articles about Flutter & Dart for building cross-platform apps'}
           </p>
 
           <div className="flex gap-4 justify-center flex-wrap">
-            <a
-              href="#latest"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            <button
+              onClick={() => {
+                document.getElementById('latest')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
-              {i18n.language === 'ar' ? 'تصفح المقالات' : 'Browse Articles'}
-            </a>
-            <a
-              href="/categories"
-              className="px-6 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all border border-gray-200 dark:border-gray-700 transform hover:scale-105"
+              {i18n.language === 'ar' ? 'ابدأ التعلم' : 'Start Learning'}
+            </button>
+            <button
+              onClick={() => {
+                document.getElementById('categories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="px-8 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 transform hover:scale-105 active:scale-95"
             >
-              {i18n.language === 'ar' ? 'استكشف الفئات' : 'Explore Categories'}
-            </a>
+              {i18n.language === 'ar' ? 'تصفح المواضيع' : 'Browse Topics'}
+            </button>
           </div>
+        </div>
+      </section>
+
+      <section className="py-8 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdBanner className="h-24 md:h-32" />
+        </div>
+      </section>
+
+      <section id="categories" className="py-16 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg">
+                <Folder className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  {i18n.language === 'ar' ? 'تصفح حسب الموضوع' : 'Browse by Topic'}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {i18n.language === 'ar' ? 'اختر الموضوع الذي يهمك' : 'Explore Flutter development topics'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {categories.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 dark:text-gray-400">
+                {i18n.language === 'ar' ? 'لا توجد فئات' : 'No categories available'}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                {getCategoryIcon(categories[0], 0)}
+                {categories.slice(1, 6).map((category, index) => getCategoryIcon(category, index + 1))}
+              </div>
+              
+              {categories.length > 6 && (
+                <div className="text-center mt-8">
+                  <Link
+                    to="/categories"
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 active:scale-95"
+                  >
+                    {i18n.language === 'ar' ? 'عرض جميع المواضيع' : 'View All Topics'}
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                    {i18n.language === 'ar' 
+                      ? `${categories.length} موضوع متاح` 
+                      : `${categories.length} topics available`}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
@@ -119,7 +219,7 @@ const HomePage: React.FC = () => {
                     {i18n.language === 'ar' ? 'المقالات المميزة' : 'Featured Articles'}
                   </h2>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {i18n.language === 'ar' ? 'أفضل المقالات المختارة لك' : 'Hand-picked best articles for you'}
+                    {i18n.language === 'ar' ? 'أفضل مقالات Flutter المختارة' : 'Top Flutter articles handpicked for you'}
                   </p>
                 </div>
               </div>
@@ -134,6 +234,12 @@ const HomePage: React.FC = () => {
         </section>
       )}
 
+      <section className="py-8 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdBanner className="h-24 md:h-32" />
+        </div>
+      </section>
+
       <section id="latest" className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-10">
@@ -146,17 +252,17 @@ const HomePage: React.FC = () => {
                   {i18n.language === 'ar' ? 'أحدث المقالات' : 'Latest Articles'}
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {i18n.language === 'ar' ? 'آخر المقالات المنشورة' : 'Recently published articles'}
+                  {i18n.language === 'ar' ? 'آخر مقالات Flutter المنشورة' : 'Recently published Flutter articles'}
                 </p>
               </div>
             </div>
-            <a
-              href="/articles"
-              className="hidden md:flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium group"
+            <Link
+              to="/articles"
+              className="hidden md:flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium group transition-colors duration-300"
             >
               {i18n.language === 'ar' ? 'عرض الكل' : 'View All'}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
           </div>
 
           {latestArticles.length === 0 ? (
@@ -186,10 +292,10 @@ const HomePage: React.FC = () => {
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                      {i18n.language === 'ar' ? 'الأكثر مشاهدة' : 'Most Viewed'}
+                      {i18n.language === 'ar' ? 'الأكثر مشاهدة' : 'Most Popular'}
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400">
-                      {i18n.language === 'ar' ? 'المقالات الأكثر شعبية' : 'Popular articles this week'}
+                      {i18n.language === 'ar' ? 'المقالات الأكثر شعبية هذا الأسبوع' : 'Top Flutter articles this week'}
                     </p>
                   </div>
                 </div>
@@ -209,56 +315,18 @@ const HomePage: React.FC = () => {
                 </div>
               )}
 
-              <AdBanner className="mt-8 h-32" />
+              <div className="mt-8">
+                <AdBanner className="h-32" />
+              </div>
             </div>
 
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
-                <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-800 rounded-xl shadow-lg p-6 border border-blue-100 dark:border-gray-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Folder className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {i18n.language === 'ar' ? 'الفئات' : 'Categories'}
-                    </h3>
-                  </div>
-                  
-                  {categories.length === 0 ? (
-                    <p className="text-gray-600 dark:text-gray-400 text-sm">
-                      {i18n.language === 'ar' ? 'لا توجد فئات' : 'No categories'}
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {categories.slice(0, 6).map((category) => (
-                        <button
-                          key={category.id}
-                          onClick={() => window.location.href = '/category/' + category.slug}
-                          className="w-full text-left px-4 py-3 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-gray-600 rounded-lg transition-all shadow-sm hover:shadow-md group"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-900 dark:text-white font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                              {i18n.language === 'ar' ? category.name_ar : category.name_en}
-                            </span>
-                            <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition-transform" />
-                          </div>
-                        </button>
-                      ))}
-                      {categories.length > 6 && (
-                        <a
-                          href="/categories"
-                          className="block w-full text-center py-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm"
-                        >
-                          {i18n.language === 'ar' ? 'عرض جميع الفئات' : 'View all categories'} →
-                        </a>
-                      )}
-                    </div>
-                  )}
-                </div>
-
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-800 rounded-xl shadow-lg p-6 border border-purple-100 dark:border-gray-700">
                   <div className="flex items-center gap-2 mb-4">
                     <TagIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {i18n.language === 'ar' ? 'الوسوم الشائعة' : 'Popular Tags'}
+                      {i18n.language === 'ar' ? 'مواضيع شائعة' : 'Popular Topics'}
                     </h3>
                   </div>
                   
@@ -271,8 +339,8 @@ const HomePage: React.FC = () => {
                       {tags.map((tag) => (
                         <button
                           key={tag.id}
-                          onClick={() => window.location.href = '/tag/' + tag.slug}
-                          className="transition-transform hover:scale-105"
+                          onClick={() => navigate('/tag/' + tag.slug)}
+                          className="transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
                         >
                           <TagBadge 
                             tag={i18n.language === 'ar' ? tag.name_ar : tag.name_en} 
@@ -288,33 +356,6 @@ const HomePage: React.FC = () => {
                 <AdBanner className="h-96" />
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {i18n.language === 'ar' ? 'هل تريد معرفة المزيد؟' : 'Want to Learn More?'}
-          </h2>
-          <p className="text-xl mb-8 text-blue-100">
-            {i18n.language === 'ar' 
-              ? 'اشترك في النشرة الإخبارية للحصول على آخر المقالات والتحديثات'
-              : 'Subscribe to our newsletter for the latest articles and updates'}
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <a
-              href="/about"
-              className="px-8 py-3 bg-white text-blue-600 font-medium rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-            >
-              {i18n.language === 'ar' ? 'من أنا' : 'About Me'}
-            </a>
-            <a
-              href="/categories"
-              className="px-8 py-3 bg-transparent border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-blue-600 transition-all transform hover:scale-105"
-            >
-              {i18n.language === 'ar' ? 'تصفح الفئات' : 'Browse Categories'}
-            </a>
           </div>
         </div>
       </section>

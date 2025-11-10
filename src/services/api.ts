@@ -15,6 +15,8 @@ export interface Category {
   name_en: string;
   name_ar: string;
   slug: string;
+  description_en?: string;
+  description_ar?: string;
   created_at: string;
   updated_at: string;
 }
@@ -33,8 +35,11 @@ export interface Post {
   title_en: string;
   title_ar: string;
   slug: string;
+  excerpt_en?: string;
+  excerpt_ar?: string;
   content_en: string;
   content_ar: string;
+  featured_image?: string;
   language: string;
   category_id: string;
   author_id: string;
