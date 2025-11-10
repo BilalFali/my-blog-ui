@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import GoogleAnalytics from './components/GoogleAnalytics';
 import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import AboutPage from './pages/AboutPage';
@@ -13,6 +14,7 @@ function App() {
   return (
     <ThemeProvider>
       <Router>
+        <GoogleAnalytics />
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
           <Navbar />
           <main>
