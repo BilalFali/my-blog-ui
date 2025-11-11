@@ -310,7 +310,7 @@ const ArticlePage: React.FC = () => {
 
           {/* Article Content */}
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-3xl shadow-xl p-6 md:p-10 mb-8 border border-gray-100 dark:border-gray-700/50">
-            <AdBanner className="mb-10 rounded-2xl overflow-hidden h-24" />
+            <AdBanner slot="inArticleAd" format="horizontal" className="mb-10 rounded-2xl overflow-hidden h-24" />
 
             <div className="prose prose-lg dark:prose-invert max-w-none
               prose-headings:font-bold prose-headings:text-gray-900 dark:prose-headings:text-white prose-headings:scroll-mt-20
@@ -329,7 +329,7 @@ const ArticlePage: React.FC = () => {
               {renderContent(content)}
             </div>
 
-            <AdBanner className="mt-10 rounded-2xl overflow-hidden h-24" />
+            <AdBanner slot="inArticleAd" format="horizontal" className="mt-10 rounded-2xl overflow-hidden h-24" />
           </div>
 
           {/* Share Section */}
@@ -399,7 +399,7 @@ const ArticlePage: React.FC = () => {
           </div>
         )}
 
-        <AdBanner className="mb-16 rounded-3xl overflow-hidden h-32 shadow-lg" />
+        <AdBanner slot="footerBanner" format="horizontal" className="mb-16 rounded-3xl overflow-hidden h-32 shadow-lg" />
       </div>
     </div>
   );

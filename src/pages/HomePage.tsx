@@ -146,7 +146,7 @@ const HomePage: React.FC = () => {
 
       <section className="py-8 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AdBanner className="h-24 md:h-32" />
+          <AdBanner slot="headerBanner" format="horizontal" className="h-24 md:h-32" />
         </div>
       </section>
 
@@ -232,7 +232,7 @@ const HomePage: React.FC = () => {
 
       <section className="py-8 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AdBanner className="h-24 md:h-32" />
+          <AdBanner slot="feedAd" format="horizontal" className="h-24 md:h-32" />
         </div>
       </section>
 
@@ -312,7 +312,7 @@ const HomePage: React.FC = () => {
               )}
 
               <div className="mt-8">
-                <AdBanner className="h-32" />
+                <AdBanner slot="inArticleAd" format="horizontal" className="h-32" />
               </div>
             </div>
 
@@ -349,7 +349,7 @@ const HomePage: React.FC = () => {
                   )}
                 </div>
 
-                <AdBanner className="h-96" />
+                <AdBanner slot="sidebarAd" format="vertical" className="h-96" />
               </div>
             </div>
           </div>
