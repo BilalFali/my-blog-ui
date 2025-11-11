@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Calendar, Clock } from 'lucide-react';
 import TagBadge from './TagBadge';
+import OptimizedImage from './OptimizedImage';
 
 export interface Article {
   id: number | string;
@@ -27,10 +28,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group animate-fade-in-up hover-lift">
       <Link to={`/article/${article.slug}`}>
         <div className="relative overflow-hidden h-48">
-          <img
+          <OptimizedImage
             src={article.image}
             alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            className="w-full h-full"
+            loading="lazy"
           />
           <div className="absolute top-3 right-3">
             <TagBadge tag={article.language.toUpperCase()} variant="accent" />
