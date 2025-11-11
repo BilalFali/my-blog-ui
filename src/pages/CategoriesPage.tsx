@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Folder, Tag as TagIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Loader from '../components/Loader';
+import CategoriesPageSkeleton from '../components/CategoriesPageSkeleton';
 import { categoriesApi, tagsApi } from '../services/api';
 
 interface Category {
@@ -83,11 +83,7 @@ const CategoriesPage: React.FC = () => {
   );
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <CategoriesPageSkeleton />;
   }
 
   return (

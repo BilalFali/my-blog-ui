@@ -6,7 +6,7 @@ import ArticleCard from '../components/ArticleCard';
 import type { Article } from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
 import TagBadge from '../components/TagBadge';
-import Loader from '../components/Loader';
+import HomePageSkeleton from '../components/HomePageSkeleton';
 import { blogApi, categoriesApi, tagsApi, type Post, type Category, type Tag } from '../services/api';
 
 const convertPostToArticle = (post: Post, isArabic: boolean): Article => ({
@@ -15,7 +15,7 @@ const convertPostToArticle = (post: Post, isArabic: boolean): Article => ({
   excerpt: isArabic 
     ? ((post.excerpt_ar || post.content_ar).substring(0, 150) + '...') 
     : ((post.excerpt_en || post.content_en).substring(0, 150) + '...'),
-  image: post.featured_image || 'https://picsum.photos/seed/' + post.id + '/800/400',
+  image: post.cover_image || post.featured_image || 'https://picsum.photos/seed/' + post.id + '/800/400',
   date: post.created_at,
   readTime: Math.ceil((isArabic ? post.content_ar : post.content_en).split(' ').length / 200),
   tags: post.tags?.map(t => isArabic ? t.name_ar : t.name_en) || [],
@@ -95,11 +95,7 @@ const HomePage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <HomePageSkeleton />;
   }
 
   return (

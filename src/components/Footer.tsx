@@ -1,30 +1,53 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Github, Linkedin, Youtube, Twitter, Send, Code2 } from 'lucide-react';
+import { Github, Linkedin, Send, Code2, CheckCircle, AlertCircle, Music2 } from 'lucide-react';
+import { newsletterApi } from '../services/api';
 
 const Footer: React.FC = () => {
   const { i18n } = useTranslation();
   const currentYear = new Date().getFullYear();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      console.log('Subscribing email:', email);
-      setSubscribed(true);
-      setTimeout(() => {
-        setSubscribed(false);
+    if (!email) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const result = await newsletterApi.subscribe(email);
+      
+      if (result.success) {
+        setSubscribed(true);
         setEmail('');
-      }, 3000);
+        setTimeout(() => {
+          setSubscribed(false);
+        }, 5000);
+      } else if (result.alreadySubscribed) {
+        setError(i18n.language === 'ar' 
+          ? 'هذا البريد الإلكتروني مسجل بالفعل' 
+          : 'This email is already subscribed');
+        setTimeout(() => setError(''), 5000);
+      }
+    } catch (err) {
+      console.error('Newsletter subscription error:', err);
+      setError(i18n.language === 'ar' 
+        ? 'حدث خطأ. يرجى المحاولة مرة أخرى' 
+        : 'An error occurred. Please try again');
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setLoading(false);
     }
   };
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/bidev', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com/in/bidev', label: 'LinkedIn' },
-    { icon: Youtube, href: 'https://youtube.com/@bidev', label: 'YouTube' },
-    { icon: Twitter, href: 'https://twitter.com/bidev', label: 'Twitter' },
+    { icon: Github, href: 'https://github.com/BilalFali', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/falibilal/', label: 'LinkedIn' },
+    { icon: Music2, href: 'https://www.tiktok.com/@bidev', label: 'TikTok' },
   ];
 
   return (
@@ -49,14 +72,23 @@ const Footer: React.FC = () => {
                 placeholder={i18n.language === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
                 className="flex-1 px-6 py-4 rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
                 required
+                disabled={loading || subscribed}
               />
               <button
                 type="submit"
-                disabled={subscribed}
+                disabled={loading || subscribed}
                 className="px-8 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {subscribed ? (
-                  i18n.language === 'ar' ? 'تم الاشتراك!' : 'Subscribed!'
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    {i18n.language === 'ar' ? 'جاري التسجيل...' : 'Subscribing...'}
+                  </>
+                ) : subscribed ? (
+                  <>
+                    <CheckCircle className="w-5 h-5" />
+                    {i18n.language === 'ar' ? 'تم الاشتراك!' : 'Subscribed!'}
+                  </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
@@ -65,10 +97,19 @@ const Footer: React.FC = () => {
                 )}
               </button>
             </form>
+            
+            {error && (
+              <div className="mt-4 flex items-center justify-center gap-2 text-red-100 bg-red-500/20 rounded-lg p-3 backdrop-blur-sm">
+                <AlertCircle className="w-5 h-5" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+  <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">

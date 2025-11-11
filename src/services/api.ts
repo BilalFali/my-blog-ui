@@ -40,6 +40,7 @@ export interface Post {
   content_en: string;
   content_ar: string;
   featured_image?: string;
+  cover_image?: string;
   language: string;
   category_id: string;
   author_id: string;
@@ -49,6 +50,13 @@ export interface Post {
   category?: Category;
   author?: Author;
   tags?: Tag[];
+}
+
+export interface NewsletterSubscriber {
+  id: string;
+  email: string;
+  subscribed_at: string;
+  is_active: boolean;
 }
 
 // Helper function to handle Supabase errors
@@ -198,9 +206,22 @@ export const categoriesApi = {
       .from('categories')
       .select('*')
       .order('name_en', { ascending: true });
-
     if (error) handleError(error);
-    return data || [];
+    const categoriesWithCounts = await Promise.all(
+      (data || []).map(async (category) => {
+        const { count } = await supabase
+          .from('posts')
+          .select('*', { count: 'exact', head: true })
+          .eq('category_id', category.id)
+          .eq('published', true);
+        return {
+          ...category,
+          post_count: count || 0
+        };
+      })
+    );
+
+    return categoriesWithCounts;
   },
 
   async getBySlug(slug: string): Promise<Category | null> {
@@ -238,7 +259,23 @@ export const tagsApi = {
       .order('name_en', { ascending: true });
 
     if (error) handleError(error);
-    return data || [];
+    
+    // Get post counts for each tag
+    const tagsWithCounts = await Promise.all(
+      (data || []).map(async (tag) => {
+        const { count } = await supabase
+          .from('post_tags')
+          .select('*', { count: 'exact', head: true })
+          .eq('tag_id', tag.id);
+        
+        return {
+          ...tag,
+          post_count: count || 0
+        };
+      })
+    );
+
+    return tagsWithCounts;
   },
 
   async getBySlug(slug: string): Promise<Tag | null> {
@@ -263,5 +300,70 @@ export const tagsApi = {
 
     if (error) handleError(error);
     return count || 0;
+  }
+};
+
+// Newsletter API
+export const newsletterApi = {
+  async subscribe(email: string) {
+    // Check if email already exists
+    const { data: existingSubscriber } = await supabase
+      .from('newsletter_subscribers')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (existingSubscriber) {
+      // If already subscribed and active
+      if (existingSubscriber.is_active) {
+        return { 
+          success: false, 
+          message: 'This email is already subscribed',
+          alreadySubscribed: true 
+        };
+      } else {
+        // Reactivate subscription
+        const { error } = await supabase
+          .from('newsletter_subscribers')
+          .update({ is_active: true, subscribed_at: new Date().toISOString() })
+          .eq('id', existingSubscriber.id);
+
+        if (error) handleError(error);
+        return { 
+          success: true, 
+          message: 'Successfully resubscribed to newsletter' 
+        };
+      }
+    }
+
+    // Create new subscription
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .insert([
+        {
+          email: email.toLowerCase(),
+          is_active: true,
+          subscribed_at: new Date().toISOString()
+        }
+      ]);
+
+    if (error) handleError(error);
+    return { 
+      success: true, 
+      message: 'Successfully subscribed to newsletter' 
+    };
+  },
+
+  async unsubscribe(email: string) {
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .update({ is_active: false })
+      .eq('email', email.toLowerCase());
+
+    if (error) handleError(error);
+    return { 
+      success: true, 
+      message: 'Successfully unsubscribed from newsletter' 
+    };
   }
 };
