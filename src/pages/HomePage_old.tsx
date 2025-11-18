@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { TrendingUp, Clock, Eye, Folder, Tag as TagIcon, ArrowRight, Code2, Smartphone, Palette, Zap, Database, Cpu, Layers } from 'lucide-react';
+import { TrendingUp, Clock, Eye, Folder, Tag as TagIcon, ArrowRight, Smartphone, Palette, Zap, Database, Cpu, Layers } from 'lucide-react';
 import ArticleCard from '../components/ArticleCard';
 import type { Article } from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
