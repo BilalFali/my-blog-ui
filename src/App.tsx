@@ -15,6 +15,8 @@ const CategoriesPage = lazy(() => import('./pages/CategoriesPage'));
 const CategoryArticlesPage = lazy(() => import('./pages/CategoryArticlesPage'));
 const TagArticlesPage = lazy(() => import('./pages/TagArticlesPage'));
 const AllArticlesPage = lazy(() => import('./pages/AllArticlesPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('./pages/TermsOfServicePage'));
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
                 <Route path="/category/:slug" element={<CategoryArticlesPage />} />
                 <Route path="/tag/:slug" element={<TagArticlesPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms" element={<TermsOfServicePage />} />
               </Routes>
             </Suspense>
           </main>

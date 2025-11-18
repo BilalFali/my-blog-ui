@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ADSENSE_CONFIG, shouldLoadAds } from '../config/adsense';
 
 interface AdBannerProps {
@@ -20,15 +20,26 @@ const AdBanner: React.FC<AdBannerProps> = ({
   className = '',
   style = {}
 }) => {
+  const adRef = useRef<HTMLModElement>(null);
+  const isAdPushed = useRef(false);
+
   useEffect(() => {
-    if (shouldLoadAds()) {
+    if (shouldLoadAds() && !isAdPushed.current) {
       try {
-        // Push ad to Google AdSense
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        // Only push if the ad element exists and hasn't been pushed yet
+        if (adRef.current && !adRef.current.hasAttribute('data-ad-status')) {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          isAdPushed.current = true;
+        }
       } catch (error) {
         console.error('AdSense error:', error);
       }
     }
+
+    // Cleanup function to reset the ref when component unmounts
+    return () => {
+      isAdPushed.current = false;
+    };
   }, []);
 
   // If ads shouldn't load, show placeholder
@@ -48,6 +59,7 @@ const AdBanner: React.FC<AdBannerProps> = ({
   return (
     <div className={className}>
       <ins
+        ref={adRef}
         className="adsbygoogle"
         style={{ 
           display: 'block',

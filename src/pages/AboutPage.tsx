@@ -1,37 +1,35 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Github, Linkedin, Youtube, Twitter, Mail, Code2, Palette, Smartphone } from 'lucide-react';
+import { Github, Linkedin, Mail, Code2, Palette, Smartphone } from 'lucide-react';
 
 const AboutPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === 'ar';
 
   const skills = [
-    { icon: Smartphone, name: 'Flutter Development', color: 'text-blue-600' },
-    { icon: Code2, name: 'Dart Programming', color: 'text-green-600' },
-    { icon: Palette, name: 'UI/UX Design', color: 'text-purple-600' },
+    { icon: Smartphone, name: isArabic ? 'تطوير Flutter' : 'Flutter & Dart', color: 'text-blue-600' },
+    { icon: Code2, name: isArabic ? 'Firebase & APIs' : 'Firebase & REST APIs', color: 'text-orange-600' },
+    { icon: Palette, name: isArabic ? 'تصميم UI/UX' : 'UI/UX Implementation', color: 'text-purple-600' },
   ];
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com/bidev', label: 'GitHub', color: 'hover:bg-gray-800' },
-    { icon: Linkedin, href: 'https://linkedin.com/in/bidev', label: 'LinkedIn', color: 'hover:bg-blue-700' },
-    { icon: Youtube, href: 'https://youtube.com/@bidev', label: 'YouTube', color: 'hover:bg-red-600' },
-    { icon: Twitter, href: 'https://twitter.com/bidev', label: 'Twitter', color: 'hover:bg-sky-500' },
-    { icon: Mail, href: 'mailto:contact@bidev.com', label: 'Email', color: 'hover:bg-green-600' },
+    { icon: Github, href: 'https://github.com/BilalFali', label: 'GitHub', color: 'hover:bg-gray-800' },
+    { icon: Linkedin, href: 'https://linkedin.com/in/falibilal', label: 'LinkedIn', color: 'hover:bg-blue-700' },
+    { icon: Mail, href: 'mailto:bilalfali60@gmail.com', label: 'Email', color: 'hover:bg-green-600' },
   ];
 
   const bioEn = {
-    intro: "Welcome to BiDev 👋",
-    paragraph1: "BiDev is your go-to platform for mastering Flutter development. We provide comprehensive articles, in-depth guides, and practical code examples to help you build amazing cross-platform applications.",
-    paragraph2: "Our mission is to make Flutter development accessible to everyone - from beginners taking their first steps in mobile development to experienced developers looking to level up their skills. Every article is crafted with care, focusing on real-world scenarios and best practices.",
-    paragraph3: "We cover everything from basic widgets and layouts to advanced topics like state management, animations, Firebase integration, and performance optimization. Join our growing community of Flutter developers!",
+    intro: "Hi, I'm Bilal 👋",
+    paragraph1: "Master of Computer Science graduate and skilled Flutter Mobile Developer with 4+ years of proven experience in designing and developing cross-platform applications for Android and iOS. I craft beautiful & performant mobile applications with Flutter, transforming ideas into seamless user experiences.",
+    paragraph2: "I'm proficient in Flutter, Dart, Firebase, Supabase, and modern state management solutions. I have successfully developed and launched multiple mobile apps including VTC (ride-hailing) applications, e-commerce platforms, and various client projects. My expertise includes real-time tracking, secure authentication, Firebase integration, payment gateway implementation, and app store deployment.",
+    paragraph3: "When I'm not coding, you can find me exploring new Flutter packages, contributing to the Flutter community, and staying up-to-date with the latest mobile development trends and best practices. Based in M'sila, Algeria, I'm passionate about creating innovative mobile solutions with 100% client satisfaction.",
   };
 
   const bioAr = {
-    intro: "مرحباً بك في BiDev 👋",
-    paragraph1: "BiDev هي منصتك المثالية لإتقان تطوير Flutter. نقدم مقالات شاملة وأدلة متعمقة وأمثلة عملية لمساعدتك في بناء تطبيقات متعددة المنصات رائعة.",
-    paragraph2: "مهمتنا هي جعل تطوير Flutter متاحاً للجميع - من المبتدئين الذين يخطون خطواتهم الأولى في تطوير التطبيقات إلى المطورين ذوي الخبرة الذين يتطلعون لتطوير مهاراتهم. كل مقال مصمم بعناية، مع التركيز على السيناريوهات الواقعية وأفضل الممارسات.",
-    paragraph3: "نغطي كل شيء من الويدجتس الأساسية والتخطيطات إلى المواضيع المتقدمة مثل إدارة الحالة والرسوم المتحركة وتكامل Firebase وتحسين الأداء. انضم إلى مجتمعنا المتنامي من مطوري Flutter!",
+    intro: "مرحباً، أنا بلال 👋",
+    paragraph1: "خريج ماجستير في علوم الكمبيوتر ومطور Flutter محترف مع أكثر من 4 سنوات من الخبرة المثبتة في تصميم وتطوير تطبيقات متعددة المنصات لنظامي Android و iOS. أقوم ببناء تطبيقات جوال جميلة وعالية الأداء باستخدام Flutter، مع تحويل الأفكار إلى تجارب مستخدم سلسة.",
+    paragraph2: "أتقن Flutter و Dart و Firebase و Supabase وحلول إدارة الحالة الحديثة. نجحت في تطوير وإطلاق العديد من تطبيقات الجوال بما في ذلك تطبيقات VTC (حجز الرحلات)، منصات التجارة الإلكترونية، ومشاريع متنوعة للعملاء. تشمل خبرتي التتبع في الوقت الفعلي، المصادقة الآمنة، تكامل Firebase، تنفيذ بوابات الدفع، ونشر التطبيقات على المتاجر.",
+    paragraph3: "عندما لا أكون منشغلاً بالبرمجة، يمكنك أن تجدني أستكشف حزم Flutter الجديدة، وأساهم في مجتمع Flutter، وأبقى على اطلاع بأحدث اتجاهات وممارسات تطوير تطبيقات الجوال. مقيم في المسيلة، الجزائر، وأنا شغوف بإنشاء حلول جوال مبتكرة مع رضا عملاء 100%.",
   };
 
   const bio = isArabic ? bioAr : bioEn;
@@ -51,9 +49,11 @@ const AboutPage: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-12">
           <div className="md:flex">
             {/* Avatar */}
-            <div className="md:w-1/3 bg-gradient-to-br from-primary-500 to-accent-500 p-8 flex items-center justify-center">
-              <div className="w-48 h-48 bg-white dark:bg-gray-700 rounded-full flex items-center justify-center text-8xl font-bold text-primary-600">
-                B
+            <div className="md:w-1/3 bg-gradient-to-br from-blue-600 to-cyan-500 p-8 flex items-center justify-center">
+              <div className="w-48 h-48 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center">
+                <span className="text-7xl font-bold bg-gradient-to-br from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                  B
+                </span>
               </div>
             </div>
 

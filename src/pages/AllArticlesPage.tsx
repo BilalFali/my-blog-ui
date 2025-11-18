@@ -29,7 +29,7 @@ const AllArticlesPage: React.FC = () => {
   const [sortBy, setSortBy] = useState<'latest' | 'oldest'>('latest');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const perPage = 12;
+  const perPage = 100; // Increased to fetch more articles per page
 
   useEffect(() => {
     const loadArticles = async () => {

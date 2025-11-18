@@ -367,3 +367,151 @@ export const newsletterApi = {
     };
   }
 };
+
+// Comments API
+export interface Comment {
+  id: string;
+  article_id: string;
+  user_name: string;
+  email: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const commentsApi = {
+  // Get all comments for an article
+  async getComments(articleId: string): Promise<Comment[]> {
+    const { data, error } = await supabase
+      .from('comments')
+      .select('*')
+      .eq('article_id', articleId)
+      .order('created_at', { ascending: false });
+
+    if (error) handleError(error);
+    return data || [];
+  },
+
+  // Add a new comment
+  async addComment(articleId: string, userName: string, email: string, content: string) {
+    const { data, error } = await supabase
+      .from('comments')
+      .insert([{
+        article_id: articleId,
+        user_name: userName.trim(),
+        email: email.toLowerCase().trim(),
+        content: content.trim()
+      }])
+      .select()
+      .single();
+
+    if (error) handleError(error);
+    return data;
+  },
+
+  // Delete a comment
+  async deleteComment(commentId: string) {
+    const { error } = await supabase
+      .from('comments')
+      .delete()
+      .eq('id', commentId);
+
+    if (error) handleError(error);
+    return { success: true };
+  }
+};
+
+// Reactions API
+export interface Reaction {
+  id: string;
+  article_id: string;
+  user_identifier: string;
+  reaction_type: 'up' | 'down';
+  created_at: string;
+}
+
+export interface ReactionCounts {
+  upCount: number;
+  downCount: number;
+  netScore: number;
+}
+
+export const reactionsApi = {
+  // Get reaction counts for an article
+  async getReactionCounts(articleId: string): Promise<ReactionCounts> {
+    const { data, error } = await supabase
+      .from('reactions')
+      .select('reaction_type')
+      .eq('article_id', articleId);
+
+    if (error) handleError(error);
+    
+    const upCount = data?.filter(r => r.reaction_type === 'up').length || 0;
+    const downCount = data?.filter(r => r.reaction_type === 'down').length || 0;
+    
+    return {
+      upCount,
+      downCount,
+      netScore: upCount - downCount
+    };
+  },
+
+  // Get user's reaction for an article
+  async getUserReaction(articleId: string, userIdentifier: string): Promise<'up' | 'down' | null> {
+    const { data, error } = await supabase
+      .from('reactions')
+      .select('reaction_type')
+      .eq('article_id', articleId)
+      .eq('user_identifier', userIdentifier)
+      .maybeSingle();
+
+    if (error) handleError(error);
+    return data?.reaction_type || null;
+  },
+
+  // Add or update a reaction
+  async addReaction(articleId: string, userIdentifier: string, reactionType: 'up' | 'down') {
+    // First, try to update existing reaction
+    const { data: existing } = await supabase
+      .from('reactions')
+      .select('id')
+      .eq('article_id', articleId)
+      .eq('user_identifier', userIdentifier)
+      .maybeSingle();
+
+    if (existing) {
+      // Update existing reaction
+      const { error } = await supabase
+        .from('reactions')
+        .update({ reaction_type: reactionType })
+        .eq('id', existing.id);
+      
+      if (error) handleError(error);
+    } else {
+      // Insert new reaction
+      const { error } = await supabase
+        .from('reactions')
+        .insert([{
+          article_id: articleId,
+          user_identifier: userIdentifier,
+          reaction_type: reactionType
+        }]);
+      
+      if (error) handleError(error);
+    }
+
+    return { success: true };
+  },
+
+  // Remove a reaction
+  async removeReaction(articleId: string, userIdentifier: string) {
+    const { error } = await supabase
+      .from('reactions')
+      .delete()
+      .eq('article_id', articleId)
+      .eq('user_identifier', userIdentifier);
+
+    if (error) handleError(error);
+    return { success: true };
+  }
+};

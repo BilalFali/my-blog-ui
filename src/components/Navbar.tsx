@@ -8,36 +8,48 @@ const Navbar: React.FC = () => {
   const { i18n } = useTranslation();
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-end items-center h-14">
-          {/* Actions - About Me, Language Dropdown, Theme Toggle */}
-          <div className="flex items-center gap-3">
-            {/* About Me Button */}
-            <a
-              href="https://portfolio.bidev.site/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-5 py-2 bg-blue-600 text-white font-bold rounded-lg shadow hover:bg-blue-700 transition-all text-sm"
-            >
-              About Me
-            </a>
+    <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <a href="/" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">B</span>
+            </div>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">BiDev</span>
+          </a>
 
-            {/* Language Dropdown */}
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-8">
+            <a href="/" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {i18n.language === 'ar' ? 'الرئيسية' : 'Home'}
+            </a>
+            <a href="/articles" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {i18n.language === 'ar' ? 'المقالات' : 'Articles'}
+            </a>
+            <a href="/categories" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {i18n.language === 'ar' ? 'الفئات' : 'Categories'}
+            </a>
+            <a href="/about" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {i18n.language === 'ar' ? 'من نحن' : 'About'}
+            </a>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">\n            {/* Language Dropdown */}
             <div className="relative group">
               <button
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all hover:scale-105"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-haspopup="listbox"
                 aria-expanded="false"
                 type="button"
               >
-                <span className="text-xl" role="img" aria-label="Language">
+                <span className="text-base" role="img" aria-label="Language">
                   {i18n.language === 'ar' ? '🇸🇦' : '🇺🇸'}
                 </span>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm">
                   {i18n.language === 'ar' ? 'AR' : 'EN'}
                 </span>
-                <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
               </button>
               <ul className="absolute right-0 mt-2 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity z-50" tabIndex={-1} role="listbox">
                 <li>
@@ -70,14 +82,14 @@ const Navbar: React.FC = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all hover:scale-105"
+              className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Toggle theme"
               title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
             >
               {theme === 'light' ? (
-                <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                <Moon className="w-5 h-5 text-gray-700" />
               ) : (
-                <Sun className="w-5 h-5 text-yellow-500" />
+                <Sun className="w-5 h-5 text-gray-300" />
               )}
             </button>
           </div>

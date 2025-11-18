@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Calendar, Clock } from 'lucide-react';
-import TagBadge from './TagBadge';
 import OptimizedImage from './OptimizedImage';
 
 export interface Article {
@@ -25,55 +23,44 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
   const { t } = useTranslation();
 
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group animate-fade-in-up hover-lift">
-      <Link to={`/article/${article.slug}`}>
-        <div className="relative overflow-hidden h-48">
+    <article className="group">
+      <Link to={`/article/${article.slug}`} className="block">
+        <div className="relative overflow-hidden rounded-lg mb-3 aspect-[16/9] bg-gray-100 dark:bg-gray-800">
           <OptimizedImage
             src={article.image}
             alt={article.title}
-            className="w-full h-full"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
-          <div className="absolute top-3 right-3">
-            <TagBadge tag={article.language.toUpperCase()} variant="accent" />
-          </div>
         </div>
       </Link>
       
-      <div className="p-5">
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
-          <span className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            {new Date(article.date).toLocaleDateString(t('language') === 'ar' ? 'ar-SA' : 'en-US')}
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            {article.readTime} {t('minuteRead')}
-          </span>
+      <div>
+        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
+          <span>{new Date(article.date).toLocaleDateString(t('language') === 'ar' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          <span>•</span>
+          <span>{article.readTime} min read</span>
         </div>
 
         <Link to={`/article/${article.slug}`}>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors line-clamp-2">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
             {article.title}
           </h3>
         </Link>
 
-        <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 leading-relaxed">
           {article.excerpt}
         </p>
 
-        <div className="flex flex-wrap gap-2 mb-4">
-          {article.tags.slice(0, 3).map((tag, index) => (
-            <TagBadge key={index} tag={tag} variant="secondary" />
-          ))}
-        </div>
-
-        <Link
-          to={`/article/${article.slug}`}
-          className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium transition-colors"
-        >
-          {t('readMore')} →
-        </Link>
+        {article.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {article.tags.slice(0, 3).map((tag, index) => (
+              <span key={index} className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );
